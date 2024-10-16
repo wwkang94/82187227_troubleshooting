@@ -1,0 +1,32 @@
+apiVersion : apps/v1
+kind: Deployment
+metadata:
+  name: troubleshooting
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers:
+        - name: troubleshooting
+          command: ["java","-jar","/app.jar"]
+          args: ["--spring.config.location=file:/config/application.yml"]
+          volumeMounts:
+          - mountPath: /mnt/troubleshooting
+            name: "troubleshooting-volume"
+            readOnly: false
+            subPath: troubleshooting
+          - mountPath: /config
+            name: application-properties
+            readOnly: true
+                          
+      volumes:
+      - name: "troubleshooting-volume"
+        persistentVolumeClaim:
+          claimName: ce-aa-pvc
+      - name: application-properties
+        configMap:
+          name: "troubleshooting-configmap"
+          items:
+            - key: application.yml
+              path: application.yml
+          defaultMode: 420

@@ -1,0 +1,17 @@
+configMapGenerator:
+- files:
+  - application.yml
+  name: troubleshooting-configmap
+resources:
+- ../../base
+- pvc.yaml
+patchesStrategicMerge:
+- deployment.yaml
+- ingress.yaml
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namePrefix: prod-
+namespace: troubleshooting
+images:
+- name: cepgbaseacr.azurecr.io/troubleshooting:latest
+  newTag: "202410091451"
